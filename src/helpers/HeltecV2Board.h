@@ -15,6 +15,8 @@
 #define  PIN_VBAT_READ   37
 #define  PIN_LED_BUILTIN 25
 
+#define  PIN_ADC_CTRL     21
+
 #include "ESP32Board.h"
 
 #include <driver/rtc_io.h>
@@ -62,12 +64,14 @@ public:
   uint16_t getBattMilliVolts() override {
     analogReadResolution(10);
 
+    digitalWrite(PIN_ADC_CTRL, LOW);
     uint32_t raw = 0;
     for (int i = 0; i < 8; i++) {
       raw += analogRead(PIN_VBAT_READ);
     }
     raw = raw / 8;
 
+    digitalWrite(PIN_ADC_CTRL, HIGH);
     return (1.98 * (2 / 1024.0) * raw) * 1000;
   }
 
